@@ -30,6 +30,7 @@
       </tbody>
     </table>
     <div class="pagination">
+      Row per page:
       <div>
         <MultiselectDropdown v-model="pageSize" :options="pageSizeList">
           <template slot="option" slot-scope="props">
@@ -37,6 +38,7 @@
           </template>
         </MultiselectDropdown>
       </div>
+      of
       <div>
         <MultiselectDropdown v-model="pageNo" :options="pageNoList">
           <template slot="option" slot-scope="props">
@@ -207,8 +209,10 @@ export default {
   }
   .pagination {
     display: flex;
+    align-items: center;
+    justify-content: flex-end;
     > div {
-      margin-left: 8px;
+      margin: 0 8px;
     }
   }
 }
