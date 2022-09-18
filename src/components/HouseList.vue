@@ -23,13 +23,17 @@
           <td>
             <div class="d-flex justify-content-center">
               <button type="button" class="btnAction btnViewDetail">VIEW DETAIL</button>
-              <button type="button" class="btnAction btnDelete">DELETE</button>
+              <button type="button" class="btnAction btnDelete" @click="DoDeleteHouse(item.id)">DELETE</button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <ModalCreateHouse v-if="isShowModalCreateHouse" :showModal.sync="isShowModalCreateHouse" />
+    <ModalCreateHouse
+      v-if="isShowModalCreateHouse"
+      :showModal.sync="isShowModalCreateHouse"
+      :isCreateSuccess.sync="isCreateSuccess"
+    />
   </div>
 </template>
 
@@ -49,13 +53,35 @@ export default {
       houseList: null,
       count: 0,
       isShowModalCreateHouse: false,
+      isCreateSuccess: false,
     };
+  },
+  watch: {
+    isCreateSuccess: {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          this.DoGetHouseList();
+          this.isCreateSuccess = false;
+        }
+      },
+    },
   },
   methods: {
     DoGetHouseList() {
       api.HouseService.DoGetHouseList().then((res) => {
         this.houseList = res.data.payload;
         this.count = res.data.count;
+      });
+    },
+    DoDeleteHouse(id) {
+      api.HouseService.DoDeleteHouse(id).then((res) => {
+        if (res.status === 200) {
+          this.DoGetHouseList();
+          console.log("Success");
+        } else {
+          console.log("Fail");
+        }
       });
     },
   },

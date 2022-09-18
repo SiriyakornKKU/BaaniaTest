@@ -11,4 +11,9 @@ export default {
       return response;
     });
   },
+  DoDeleteHouse(id) {
+    return axios.delete("https://test-backend.baania.dev/home/" + id).then((response) => {
+      return response;
+    });
+  },
 };

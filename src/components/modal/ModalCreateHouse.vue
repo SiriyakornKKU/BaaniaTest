@@ -91,10 +91,12 @@ export default {
   methods: {
     DoCreateHouse() {
       const payload = this.CreatePayload();
+      this.$emit("update:isCreateSuccess", false);
       api.HouseService.DoCreateHouse(payload).then((res) => {
-        console.log(res);
         if (res.status === 200) {
           console.log("Success");
+          this.CloseModal();
+          this.$emit("update:isCreateSuccess", true);
         } else {
           console.log("Fail");
         }
