@@ -2,7 +2,7 @@
   <div id="houseList">
     <div class="d-flex justify-content-between">
       <h5>HOUSE LIST</h5>
-      <button type="button" class="btn btn-success" @click="isShowModalCreateHouse = true">CREATE</button>
+      <button type="button" class="btn btn-success" @click="CreateHouse()">CREATE</button>
     </div>
     <table class="table">
       <thead>
@@ -22,7 +22,7 @@
           <td>{{ item.price }}</td>
           <td>
             <div class="d-flex justify-content-center">
-              <button type="button" class="btnAction btnViewDetail">VIEW DETAIL</button>
+              <button type="button" class="btnAction btnViewDetail" @click="ViewDetail(item)">VIEW DETAIL</button>
               <button type="button" class="btnAction btnDelete" @click="DoDeleteHouse(item.id)">DELETE</button>
             </div>
           </td>
@@ -33,12 +33,14 @@
       v-if="isShowModalCreateHouse"
       :showModal.sync="isShowModalCreateHouse"
       :isCreateSuccess.sync="isCreateSuccess"
+      :houseTemplate="createHouseTemplate"
     />
   </div>
 </template>
 
 <script>
 import * as api from "../service/ApiService";
+import houseHelper from "../helper/houseHelper";
 import ModalCreateHouse from "./modal/ModalCreateHouse.vue";
 
 export default {
@@ -54,6 +56,7 @@ export default {
       count: 0,
       isShowModalCreateHouse: false,
       isCreateSuccess: false,
+      createHouseTemplate: houseHelper.GetCreateHouseTemplate(),
     };
   },
   watch: {
@@ -83,6 +86,17 @@ export default {
           console.log("Fail");
         }
       });
+    },
+    CreateHouse() {
+      this.createHouseTemplate = houseHelper.GetCreateHouseTemplate();
+      this.isShowModalCreateHouse = true;
+    },
+    ViewDetail(item) {
+      this.createHouseTemplate.name.value = item.name;
+      this.createHouseTemplate.postCode.value = item.post_code;
+      this.createHouseTemplate.price.value = item.price;
+      this.createHouseTemplate.description.value = item.description;
+      this.isShowModalCreateHouse = true;
     },
   },
 };

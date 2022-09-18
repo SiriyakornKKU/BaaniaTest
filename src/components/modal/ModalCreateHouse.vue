@@ -58,27 +58,15 @@ import ModalBox from "./ModalBox.vue";
 
 export default {
   components: { ModalBox },
+  props: {
+    houseTemplate: {
+      type: Object,
+    },
+  },
   data() {
     return {
       showModal: true,
-      createHouseTemplate: {
-        name: {
-          value: "",
-          isError: false,
-        },
-        postCode: {
-          value: "",
-          isError: false,
-        },
-        price: {
-          value: 0,
-          isError: false,
-        },
-        description: {
-          value: "",
-          isError: false,
-        },
-      },
+      createHouseTemplate: JSON.parse(JSON.stringify(this.houseTemplate)),
     };
   },
   watch: {
