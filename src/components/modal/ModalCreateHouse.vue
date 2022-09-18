@@ -2,7 +2,8 @@
   <div id="modalCreareHouse">
     <ModalBox :showModal.sync="showModal">
       <template slot="header">
-        <h2>Create</h2>
+        <h5 v-if="isEdit">Item Detail - {{ createHouseTemplate.id }}</h5>
+        <h5 v-else>Create</h5>
       </template>
       <template slot="body">
         <div class="row">
@@ -45,7 +46,8 @@
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="CloseModal()">
             CANCEL
           </button>
-          <button type="button" class="btn btn-success" @click="DoCreateHouse()">CREATE</button>
+          <button v-if="isEdit" type="button" class="btn btn-warning" @click="DoUpdateHouse()">UPDATE</button>
+          <button v-else type="button" class="btn btn-success" @click="DoCreateHouse()">CREATE</button>
         </div>
       </template>
     </ModalBox>
@@ -61,6 +63,9 @@ export default {
   props: {
     houseTemplate: {
       type: Object,
+    },
+    isEdit: {
+      type: Boolean,
     },
   },
   data() {
@@ -78,7 +83,7 @@ export default {
   },
   methods: {
     DoCreateHouse() {
-      const payload = this.CreatePayload();
+      const payload = this.GetCreateHousePayload();
       this.$emit("update:isCreateSuccess", false);
       api.HouseService.DoCreateHouse(payload).then((res) => {
         if (res.status === 200) {
@@ -90,8 +95,31 @@ export default {
         }
       });
     },
-    CreatePayload() {
+    DoUpdateHouse() {
+      const payload = this.GetUpdateHousePayload();
+      this.$emit("update:isUpdateSuccess", false);
+      api.HouseService.DoUpdateHouse(payload).then((res) => {
+        if (res.status === 200) {
+          console.log("Success");
+          this.CloseModal();
+          this.$emit("update:isUpdateSuccess", true);
+        } else {
+          console.log("Fail");
+        }
+      });
+    },
+    GetCreateHousePayload() {
       const payload = {
+        name: this.createHouseTemplate.name.value,
+        desc: this.createHouseTemplate.description.value,
+        price: Number(this.createHouseTemplate.price.value),
+        post_code: this.createHouseTemplate.postCode.value,
+      };
+      return payload;
+    },
+    GetUpdateHousePayload() {
+      const payload = {
+        id: this.createHouseTemplate.id,
         name: this.createHouseTemplate.name.value,
         desc: this.createHouseTemplate.description.value,
         price: Number(this.createHouseTemplate.price.value),

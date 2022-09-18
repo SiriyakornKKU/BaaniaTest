@@ -16,4 +16,9 @@ export default {
       return response;
     });
   },
+  DoUpdateHouse(payload) {
+    return axios.patch("https://test-backend.baania.dev/home/" + payload.id, payload).then((response) => {
+      return response;
+    });
+  },
 };

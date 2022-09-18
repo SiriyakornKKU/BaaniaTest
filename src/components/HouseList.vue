@@ -33,7 +33,9 @@
       v-if="isShowModalCreateHouse"
       :showModal.sync="isShowModalCreateHouse"
       :isCreateSuccess.sync="isCreateSuccess"
+      :isUpdateSuccess.sync="isUpdateSuccess"
       :houseTemplate="createHouseTemplate"
+      :isEdit="isEdit"
     />
   </div>
 </template>
@@ -56,7 +58,9 @@ export default {
       count: 0,
       isShowModalCreateHouse: false,
       isCreateSuccess: false,
+      isUpdateSuccess: false,
       createHouseTemplate: houseHelper.GetCreateHouseTemplate(),
+      isEdit: false,
     };
   },
   watch: {
@@ -66,6 +70,15 @@ export default {
         if (newValue) {
           this.DoGetHouseList();
           this.isCreateSuccess = false;
+        }
+      },
+    },
+    isUpdateSuccess: {
+      immediate: true,
+      handler(newValue) {
+        if (newValue) {
+          this.DoGetHouseList();
+          this.isUpdateSuccess = false;
         }
       },
     },
@@ -90,13 +103,16 @@ export default {
     CreateHouse() {
       this.createHouseTemplate = houseHelper.GetCreateHouseTemplate();
       this.isShowModalCreateHouse = true;
+      this.isEdit = false;
     },
     ViewDetail(item) {
+      this.createHouseTemplate.id = item.id;
       this.createHouseTemplate.name.value = item.name;
       this.createHouseTemplate.postCode.value = item.post_code;
       this.createHouseTemplate.price.value = item.price;
       this.createHouseTemplate.description.value = item.description;
       this.isShowModalCreateHouse = true;
+      this.isEdit = true;
     },
   },
 };

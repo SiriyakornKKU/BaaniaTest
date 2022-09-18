@@ -1,6 +1,7 @@
 export default {
   GetCreateHouseTemplate() {
     const createHouseTemplate = {
+      id: 0,
       name: {
         value: "",
         isError: false,
