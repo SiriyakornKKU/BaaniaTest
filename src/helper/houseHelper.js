@@ -28,4 +28,9 @@ export default {
     });
     return postCodeList;
   },
+  SetTablePage(pageNumber, pageSize, detailList) {
+    const start = pageNumber == 1 ? 0 : (pageNumber - 1) * pageSize;
+    const end = pageSize * pageNumber;
+    return detailList.slice(start, end);
+  },
 };

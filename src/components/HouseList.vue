@@ -29,6 +29,22 @@
         </tr>
       </tbody>
     </table>
+    <div class="pagination">
+      <div>
+        <MultiselectDropdown v-model="pageSize" :options="pageSizeList">
+          <template slot="option" slot-scope="props">
+            <slot name="option" :props="props.option"> </slot>
+          </template>
+        </MultiselectDropdown>
+      </div>
+      <div>
+        <MultiselectDropdown v-model="pageNo" :options="pageNoList">
+          <template slot="option" slot-scope="props">
+            <slot name="option" :props="props.option"> </slot>
+          </template>
+        </MultiselectDropdown>
+      </div>
+    </div>
     <ModalCreateHouse
       v-if="isShowModalCreateHouse"
       :showModal.sync="isShowModalCreateHouse"
@@ -62,6 +78,7 @@ export default {
   data() {
     return {
       houseList: null,
+      houseListAll: null,
       count: 0,
       isShowModalCreateHouse: false,
       createLoadingStatus: Enums.LoadingStatusType.None,
@@ -70,6 +87,11 @@ export default {
       isShowModalFail: false,
       createHouseTemplate: houseHelper.GetCreateHouseTemplate(),
       isEdit: false,
+      pageSizeList: [5, 10, 20, 50, 100],
+      pageSize: 5,
+      pageNoList: [],
+      pageNo: 1,
+      pageNoMax: 0,
     };
   },
   watch: {
@@ -92,12 +114,30 @@ export default {
         }
       },
     },
+    pageSize: {
+      immediate: true,
+      handler() {
+        this.SetPageNoList();
+        this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+      },
+    },
+    pageNo: {
+      immediate: true,
+      handler() {
+        this.SetPageNoList();
+        this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+      },
+    },
   },
   methods: {
     DoGetHouseList() {
       api.HouseService.DoGetHouseList().then((res) => {
-        this.houseList = res.data.payload;
-        this.count = res.data.count;
+        if (res.status === 200) {
+          this.houseListAll = res.data.payload;
+          this.houseList = houseHelper.SetTablePage(1, 5, this.houseListAll);
+          this.count = res.data.count;
+          this.SetPageNoList();
+        }
       });
     },
     DoDeleteHouse(id) {
@@ -124,6 +164,21 @@ export default {
       this.isShowModalCreateHouse = true;
       this.isEdit = true;
     },
+    SetPageNoList() {
+      this.pageNoMax = Math.ceil(this.count / this.pageSize);
+      this.pageNoList = [];
+      if (this.pageNoMax < this.pageNo) {
+        this.pageNo = 1;
+      }
+      if (this.pageNoMax > 0) {
+        for (let i = 0; i < this.pageNoMax; i++) {
+          let value = i + 1;
+          this.pageNoList.push(value);
+        }
+      } else {
+        this.pageNoList.push(1);
+      }
+    },
   },
 };
 </script>
@@ -149,6 +204,12 @@ export default {
     background-color: #fdf4f7;
     color: #d17c91;
     margin-left: 4px;
+  }
+  .pagination {
+    display: flex;
+    > div {
+      margin-left: 8px;
+    }
   }
 }
 </style>
