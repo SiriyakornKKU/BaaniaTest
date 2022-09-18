@@ -21,4 +21,9 @@ export default {
       return response;
     });
   },
+  DoGetPostCodeList() {
+    return axios.get("https://test-backend.baania.dev/postCode").then((response) => {
+      return response;
+    });
+  },
 };

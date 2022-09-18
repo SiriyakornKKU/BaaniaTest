@@ -1,29 +1,46 @@
 <template>
-    <div id="selectPostCode">
-        <div class="content">
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                <option selected>SELECT POST CODE</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-        </div>
+  <div id="selectPostCode">
+    <div class="content">
+      <MultiselectDropdown v-model="postCodeSelected" :options="postCodeList">
+        <template slot="option" slot-scope="props">
+          <slot name="option" :props="props.option.post_code"> </slot>
+        </template>
+      </MultiselectDropdown>
     </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        
-    }
+import * as api from "../service/ApiService";
+import houseHelper from "../helper/houseHelper";
+
+export default {
+  created() {
+    this.DoGetPostCodeList();
+  },
+  data() {
+    return {
+      postCodeSelected: null,
+      postCodeList: [],
+    };
+  },
+  methods: {
+    DoGetPostCodeList() {
+      api.HouseService.DoGetPostCodeList().then((res) => {
+        this.postCodeList = houseHelper.ConvertToPostCodeList(res.data.payload);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 #selectPostCode {
-    height: 235px;
-    margin-top: 30px;
-    padding: 65px 200px;
-    .content {
-        background-color: #F4F7FC; 
-    }
+  margin-top: 30px;
+  padding: 65px 200px;
+  background-color: #f4f7fc;
+  .content {
+    background-color: #f4f7fc;
+  }
 }
 </style>

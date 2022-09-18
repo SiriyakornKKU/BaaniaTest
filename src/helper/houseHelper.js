@@ -21,4 +21,11 @@ export default {
     };
     return createHouseTemplate;
   },
+  ConvertToPostCodeList(payload) {
+    let postCodeList = [];
+    payload.forEach((item) => {
+      postCodeList.push(item.post_code);
+    });
+    return postCodeList;
+  },
 };
