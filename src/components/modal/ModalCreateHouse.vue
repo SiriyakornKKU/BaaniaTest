@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import Enums from "@/enums/enums";
 import * as api from "../../service/ApiService";
 import ModalBox from "./ModalBox.vue";
 
@@ -84,27 +85,27 @@ export default {
   methods: {
     DoCreateHouse() {
       const payload = this.GetCreateHousePayload();
-      this.$emit("update:isCreateSuccess", false);
+      this.$emit("update:createLoadingStatus", Enums.LoadingStatusType.Loading);
       api.HouseService.DoCreateHouse(payload).then((res) => {
         if (res.status === 200) {
           console.log("Success");
           this.CloseModal();
-          this.$emit("update:isCreateSuccess", true);
+          this.$emit("update:createLoadingStatus", Enums.LoadingStatusType.Success);
         } else {
           console.log("Fail");
+          this.$emit("update:createLoadingStatus", Enums.LoadingStatusType.Failed);
         }
       });
     },
     DoUpdateHouse() {
       const payload = this.GetUpdateHousePayload();
-      this.$emit("update:isUpdateSuccess", false);
+      this.$emit("update:updateLoadingStatus", Enums.LoadingStatusType.Loading);
       api.HouseService.DoUpdateHouse(payload).then((res) => {
         if (res.status === 200) {
-          console.log("Success");
+          this.$emit("update:updateLoadingStatus", Enums.LoadingStatusType.Success);
           this.CloseModal();
-          this.$emit("update:isUpdateSuccess", true);
         } else {
-          console.log("Fail");
+          this.$emit("update:updateLoadingStatus", Enums.LoadingStatusType.Failed);
         }
       });
     },

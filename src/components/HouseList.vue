@@ -32,11 +32,13 @@
     <ModalCreateHouse
       v-if="isShowModalCreateHouse"
       :showModal.sync="isShowModalCreateHouse"
-      :isCreateSuccess.sync="isCreateSuccess"
-      :isUpdateSuccess.sync="isUpdateSuccess"
       :houseTemplate="createHouseTemplate"
+      :createLoadingStatus.sync="createLoadingStatus"
+      :updateLoadingStatus.sync="updateLoadingStatus"
       :isEdit="isEdit"
     />
+    <ModalSuccess v-if="isShowModalSuccess" :showModal.sync="isShowModalSuccess" />
+    <ModalFail v-if="isShowModalFail" :showModal.sync="isShowModalFail" />
   </div>
 </template>
 
@@ -44,10 +46,15 @@
 import * as api from "../service/ApiService";
 import houseHelper from "../helper/houseHelper";
 import ModalCreateHouse from "./modal/ModalCreateHouse.vue";
+import ModalSuccess from "./modal/ModalSuccess.vue";
+import ModalFail from "./modal/ModalFail.vue";
+import Enums from "../enums/enums";
 
 export default {
   components: {
     ModalCreateHouse,
+    ModalSuccess,
+    ModalFail,
   },
   created() {
     this.DoGetHouseList();
@@ -57,28 +64,31 @@ export default {
       houseList: null,
       count: 0,
       isShowModalCreateHouse: false,
-      isCreateSuccess: false,
-      isUpdateSuccess: false,
+      createLoadingStatus: Enums.LoadingStatusType.None,
+      updateLoadingStatus: Enums.LoadingStatusType.None,
+      isShowModalSuccess: false,
+      isShowModalFail: false,
       createHouseTemplate: houseHelper.GetCreateHouseTemplate(),
       isEdit: false,
     };
   },
   watch: {
-    isCreateSuccess: {
+    createLoadingStatus: {
       immediate: true,
       handler(newValue) {
-        if (newValue) {
+        if (newValue === Enums.LoadingStatusType.Success) {
           this.DoGetHouseList();
-          this.isCreateSuccess = false;
+          this.isShowModalSuccess = true;
+        } else if (newValue === Enums.LoadingStatusType.Failed) {
+          this.isShowModalFail = true;
         }
       },
     },
-    isUpdateSuccess: {
+    updateLoadingStatus: {
       immediate: true,
       handler(newValue) {
-        if (newValue) {
+        if (newValue === Enums.LoadingStatusType.Success) {
           this.DoGetHouseList();
-          this.isUpdateSuccess = false;
         }
       },
     },
@@ -110,7 +120,7 @@ export default {
       this.createHouseTemplate.name.value = item.name;
       this.createHouseTemplate.postCode.value = item.post_code;
       this.createHouseTemplate.price.value = item.price;
-      this.createHouseTemplate.description.value = item.description;
+      this.createHouseTemplate.description.value = item.desc;
       this.isShowModalCreateHouse = true;
       this.isEdit = true;
     },
