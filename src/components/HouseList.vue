@@ -38,7 +38,6 @@
           </template>
         </MultiselectDropdown>
       </div>
-      of
       <div>
         <MultiselectDropdown v-model="pageNo" :options="pageNoList">
           <template slot="option" slot-scope="props">
