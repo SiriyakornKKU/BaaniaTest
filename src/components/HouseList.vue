@@ -32,14 +32,14 @@
     <div class="pagination">
       Row per page:
       <div>
-        <MultiselectDropdown v-model="pageSize" :options="pageSizeList">
+        <MultiselectDropdown v-model="pageSize" :options="pageSizeList" :show-labels="false">
           <template slot="option" slot-scope="props">
             <slot name="option" :props="props.option"> </slot>
           </template>
         </MultiselectDropdown>
       </div>
       <div>
-        <MultiselectDropdown v-model="pageNo" :options="pageNoList">
+        <MultiselectDropdown v-model="pageNo" :options="pageNoList" :show-labels="false">
           <template slot="option" slot-scope="props">
             <slot name="option" :props="props.option"> </slot>
           </template>
@@ -117,16 +117,20 @@ export default {
     },
     pageSize: {
       immediate: true,
-      handler() {
-        this.SetPageNoList();
-        this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+      handler(newValue) {
+        if (newValue) {
+          this.SetPageNoList();
+          this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+        }
       },
     },
     pageNo: {
       immediate: true,
-      handler() {
-        this.SetPageNoList();
-        this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+      handler(newValue) {
+        if (newValue) {
+          this.SetPageNoList();
+          this.houseList = houseHelper.SetTablePage(this.pageNo, this.pageSize, this.houseListAll);
+        }
       },
     },
   },
@@ -212,6 +216,7 @@ export default {
     justify-content: flex-end;
     > div {
       margin: 0 8px;
+      width: 60px;
     }
   }
 }
